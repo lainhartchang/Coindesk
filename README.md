@@ -1,2 +1,2 @@
 # Coindesk
-cathaybk java spring boot api practise
+CUB java spring boot api practise
