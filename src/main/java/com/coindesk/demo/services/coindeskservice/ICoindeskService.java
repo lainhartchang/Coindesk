@@ -1,8 +1,20 @@
 package com.coindesk.demo.services.coindeskservice;
 
-public interface ICoindeskService {
+import com.coindesk.demo.services.models.Bitcoin;
 
-    String displayOriginalCoindesk();   
+import java.util.List;
+
+public interface ICoindeskService /*extends IGeneralRepository<Bitcoin>*/{
+
+    public String displayOriginalCoindesk();   
     
-    String displayCUBCoindesk();
+    public String displayCUBCoindesk();
+
+    public List<Bitcoin> GetAll();
+
+    public Bitcoin GetByID(String id);
+
+    public int AddCoin(Bitcoin model);
+
+    public int Delete(String code);
 }
