@@ -4,10 +4,10 @@ import java.util.List;
 
 public interface IGeneralRepository<T> {
     
-    public int getByID(String id);
+    public T getById(String id);
     public List<T> getAll();
-    public int Insert(T model);
-    public int Update(T model);
-    public int Delete(String id);
+    public int insert(T model);
+    public int update(T model);
+    public void delete(String id);
 
 }
