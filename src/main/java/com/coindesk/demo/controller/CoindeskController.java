@@ -23,7 +23,7 @@ public class CoindeskController {
         return "Hellooo";
     }
 
-    @GetMapping("/getcoindesk")
+    @GetMapping("/displaycoindesk")
     @RequestMapping(value = "/displaycoindesk", method = RequestMethod.GET, produces = "application/json")    
     //@ResponseBody
     public String DisplayCoindesk() {

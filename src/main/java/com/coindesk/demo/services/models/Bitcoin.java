@@ -1,10 +1,5 @@
 package com.coindesk.demo.services.models;
 
-import java.math.BigDecimal;
-
-// import java.math.BigDecimal;
-// import java.security.Timestamp;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -18,6 +13,7 @@ import javax.persistence.Table;
 // import java.text.SimpleDateFormat;
 // import java.util.Date;
 // import java.time.LocalDateTime;
+import java.math.BigDecimal;
 
 import lombok.Data;
 import lombok.experimental.Accessors;
@@ -41,7 +37,7 @@ public class Bitcoin {
     private String Symbol;
     
     @Column(name="rate")
-    private BigDecimal Rate; 
+    private String Rate; 
 
     @Column(name="description")
     private String Description;

@@ -47,7 +47,7 @@ public class CoindeskRepository implements ICoindeskRepository {
             ps.setString(1, model.getCode());
             ps.setString(2, model.getCodecname());
             ps.setString(3, model.getSymbol());
-            ps.setBigDecimal(4, model.getRate());
+            ps.setString(4, model.getRate());
             ps.setString(5, model.getDescription());
             ps.setBigDecimal(6, model.getRatefloat());
             ps.setString(7, model.getUpdated());
@@ -66,7 +66,7 @@ public class CoindeskRepository implements ICoindeskRepository {
             ps.setString(1, model.getCode());
             ps.setString(2, model.getCodecname());
             ps.setString(3, model.getSymbol());
-            ps.setBigDecimal(4, model.getRate());
+            ps.setString(4, model.getRate());
             ps.setString(5, model.getDescription());
             ps.setBigDecimal(6, model.getRatefloat());
             ps.setString(7, model.getUpdated());
