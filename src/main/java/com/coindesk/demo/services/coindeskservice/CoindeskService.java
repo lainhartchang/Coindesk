@@ -31,22 +31,25 @@ import java.lang.Long;
 public final class CoindeskService implements ICoindeskService {
 
     private ICoindeskRepository _coindeskRepository;
-
-    private List<Bitcoin> _bitcoinList;
     
     public CoindeskService()    {
         
     }
 
     @Autowired
-    public CoindeskService(ICoindeskRepository _coindeskRepository)   {
-        this._coindeskRepository = _coindeskRepository;        
+    public CoindeskService(ICoindeskRepository coindeskRepository)   {
+        this._coindeskRepository = coindeskRepository;        
     }
 
     @Override
     public String displayOriginalCoindesk() {
-
-        return CallCoinDeskAPI();
+        String jsonStr = CallCoinDeskAPI();
+        List<Bitcoin> _bitcoinList = JsonParserObject(jsonStr);
+        for (Bitcoin entry : _bitcoinList) {
+            _coindeskRepository.insert(entry);
+        }
+        
+        return jsonStr;
     }    
     
     @Override
@@ -60,9 +63,8 @@ public final class CoindeskService implements ICoindeskService {
     }
 
     @Override
-    public Bitcoin GetByID(String id)   {
-        _coindeskRepository.getById("EUR");
-        return null;
+    public Bitcoin GetByID(String id)   {        
+        return _coindeskRepository.getById(id);
     }
 
     @Override
@@ -71,8 +73,9 @@ public final class CoindeskService implements ICoindeskService {
     }
 
     @Override
-    public int Delete(String code)  {
-        return 0;
+    public void Delete(String code)  {
+
+        _coindeskRepository.delete(code);
     }
 
     private String CallCoinDeskAPI() {
@@ -86,13 +89,12 @@ public final class CoindeskService implements ICoindeskService {
             if (responseCode == HttpURLConnection.HTTP_OK) {
                 BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
                 String inputLine;
-                //StringBuilder response = new StringBuilder();
 
                 while ((inputLine = in.readLine()) != null) {
                     response.append(inputLine);
                 }
                 in.close();
-                _bitcoinList = JsonParserObject(response.toString());
+                
                  
                 // Use the jsonObject as needed                
                 return response.toString();
@@ -106,21 +108,8 @@ public final class CoindeskService implements ICoindeskService {
         return "Get data fail.";
     }    
 
-    private List<Bitcoin> JsonParserObject(String response) {
-        // Convert the JSON response to an object using Gson
-        Gson gson = new GsonBuilder().registerTypeAdapter(Double.class, (JsonDeserializer<Double>) (jsonElement, typeOfT, ctx) -> {
-            if (jsonElement.isJsonPrimitive() && jsonElement.getAsJsonPrimitive().isNumber()) {
-                return jsonElement.getAsDouble();
-            } else if (jsonElement.isJsonPrimitive() && jsonElement.getAsJsonPrimitive().isString()) {
-                String stringValue = jsonElement.getAsString();
-                try {
-                    return Double.parseDouble(stringValue);
-                } catch (NumberFormatException e) {
-                    return null; 
-                }
-            }
-            return null; 
-        }).create();
+    private List<Bitcoin> JsonParserObject(String response) {      
+        Gson gson = new GsonBuilder().create();
         SourceCoin sourceCoinObj = gson.fromJson(response.toString(), SourceCoin.class);
         return SourceCoinToBitcoin(sourceCoinObj);
     }
@@ -135,27 +124,28 @@ public final class CoindeskService implements ICoindeskService {
             bitcoin.setUpdateduk(sourceCoin.getTime().getUpdateduk());
             bitcoin.setCreatedate(GetDate());
             bitcoin.setModdate(GetDate());
+            bitcoin.setUpdatedtw(GeTwDate());
 
             if (i == 0) {
                 bitcoin.setCode(sourceCoin.getBpi().getUSD().getCode());
                 bitcoin.setSymbol(sourceCoin.getBpi().getUSD().getSymbol());
                 bitcoin.setRate(sourceCoin.getBpi().getUSD().getRate());
                 bitcoin.setDescription(sourceCoin.getBpi().getUSD().getDescription());
-                bitcoin.setRatefloat(new BigDecimal(sourceCoin.getBpi().getUSD().getRate_float()));
+                bitcoin.setRatefloat(sourceCoin.getBpi().getUSD().getRate_float());
                 bitcoin.setCodecname(localization(sourceCoin.getBpi().getUSD().getCode()));
             } else if (i == 1) {
                 bitcoin.setCode(sourceCoin.getBpi().getGBP().getCode());
                 bitcoin.setSymbol(sourceCoin.getBpi().getGBP().getSymbol());
                 bitcoin.setRate(sourceCoin.getBpi().getGBP().getRate());
                 bitcoin.setDescription(sourceCoin.getBpi().getGBP().getDescription());
-                bitcoin.setRatefloat(new BigDecimal(sourceCoin.getBpi().getGBP().getRate_float()));
+                bitcoin.setRatefloat(sourceCoin.getBpi().getGBP().getRate_float());
                 bitcoin.setCodecname(localization(sourceCoin.getBpi().getGBP().getCode()));
             } else if (i == 2) {
                 bitcoin.setCode(sourceCoin.getBpi().getEUR().getCode());
                 bitcoin.setSymbol(sourceCoin.getBpi().getEUR().getSymbol());
                 bitcoin.setRate(sourceCoin.getBpi().getEUR().getRate());
                 bitcoin.setDescription(sourceCoin.getBpi().getEUR().getDescription());
-                bitcoin.setRatefloat(new BigDecimal(sourceCoin.getBpi().getEUR().getRate_float()));
+                bitcoin.setRatefloat(sourceCoin.getBpi().getEUR().getRate_float());
                 bitcoin.setCodecname(localization(sourceCoin.getBpi().getEUR().getCode()));
             }
             
@@ -170,6 +160,12 @@ public final class CoindeskService implements ICoindeskService {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMddhhmmss");
         String formattedDateTime = now.format(formatter);
         return Long.parseLong(formattedDateTime);          
+    }
+
+    private String GeTwDate() {
+        LocalDateTime now = LocalDateTime.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd hh:mm:ss");
+        return now.format(formatter);
     }
 
     private String localization(String response) {

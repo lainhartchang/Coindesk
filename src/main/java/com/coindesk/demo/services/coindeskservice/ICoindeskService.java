@@ -16,5 +16,5 @@ public interface ICoindeskService /*extends IGeneralRepository<Bitcoin>*/{
 
     public int AddCoin(Bitcoin model);
 
-    public int Delete(String code);
+    public void Delete(String code);
 }

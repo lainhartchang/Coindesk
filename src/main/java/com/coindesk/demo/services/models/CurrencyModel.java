@@ -15,7 +15,6 @@ public class CurrencyModel {
 
     @JsonProperty("rate_float")
     public String rate_float;        
-
     // Getter and Setter methods
 
     // public String getCode() {

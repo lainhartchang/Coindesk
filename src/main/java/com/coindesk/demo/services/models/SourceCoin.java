@@ -1,7 +1,7 @@
 package com.coindesk.demo.services.models;
 
-import scala.collection.concurrent.Map;
-import java.util.List;
+// import scala.collection.concurrent.Map;
+// import java.util.List;
 import lombok.Data;
 import lombok.experimental.Accessors;
 

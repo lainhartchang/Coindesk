@@ -23,10 +23,13 @@ import lombok.experimental.Accessors;
 @Table(name="Bitcoin")
 @Accessors(chain = true)
 public class Bitcoin {
-    
-    @GeneratedValue(strategy = GenerationType.AUTO)
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+     
+    @Column(name="id")
+    private int Id;
+
     @Column(name="code")
     private String Code;
     
@@ -43,7 +46,8 @@ public class Bitcoin {
     private String Description;
     
     @Column(name="ratefloat")
-    private BigDecimal Ratefloat;
+    //private BigDecimal Ratefloat;
+    private String Ratefloat;
 
     @Column(name="updated")
     private String Updated;
@@ -53,6 +57,9 @@ public class Bitcoin {
 
     @Column(name="updateduk")
     private String Updateduk;
+
+    @Column(name="updatedtw")
+    private String Updatedtw;
     
     @Column(name="createdate")
     private Long Createdate;
