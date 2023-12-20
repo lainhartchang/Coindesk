@@ -5,8 +5,9 @@ import lombok.experimental.Accessors;
 
 @Data
 @Accessors(chain = true)
-public class CoinTime {
-    public String updated;
-    public String updatedISO;
-    public String updateduk;
+public class CUBCoin {
+    public String Code;
+    public String CodeCname;
+    public String Rate;
+    public String UpdateTW;
 }

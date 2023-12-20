@@ -4,20 +4,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
-//import org.springframework.transaction.annotation.Transactional;
-//import org.springframework.jdbc.datasource.embedded.DataSourceFactory;
-//import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 import org.springframework.dao.DataAccessException;
 
 import com.coindesk.demo.services.models.Bitcoin;
-
-import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.sql.PreparedStatement;
-// import java.sql.ResultSet;
-//import java.sql.SQLException;
-//import java.sql.SQLException;
 import java.util.List;
 
 //import java.sql.SQLException;
@@ -33,19 +24,9 @@ public class CoindeskRepository implements ICoindeskRepository {
         //this.jdbcTemplate = new JdbcTemplate(dataSource);
     }
 
-    public Bitcoin getById(String id)  throws DataAccessException  {
-        String sql = "SELECT * FROM BITCOIN WHERE id = " + Integer.parseInt(id);  ;
-        //Object[] params = { id };
-        //BeanPropertyRowMapper<Bitcoin> rowMapper = BeanPropertyRowMapper.newInstance(Bitcoin.class, false);
-        //jdbcTemplate.queryForObject(sql, params, new BitcoinRowMapper());
-        //jdbcTemplate.queryForObject(sql, params, new BeanPropertyRowMapper<Bitcoin>(Bitcoin.class));
-        
-        //return jdbcTemplate.queryForObject(sql, new Object[]{id}, new CustomerMapper());
-        //RowMapper<Bitcoin> rowMapper = new BitcoinRowMapper();
-        //return jdbcTemplate.queryForObject(sql, params, new BeanPropertyRowMapper<Bitcoin>(Bitcoin.class)));
-        //return jdbcTemplate.queryForObject(sql, params, rowMapper);
-        //return jdbcTemplate.query(sql, new BeanPropertyRowMapper<Bitcoin>(Bitcoin.class));
-        return jdbcTemplate.queryForObject(sql, Bitcoin.class);
+    public Bitcoin getById(String id) throws DataAccessException {
+        String sql = "SELECT * FROM BITCOIN WHERE id = ?";
+        return jdbcTemplate.queryForObject(sql, new Object[]{id}, new BitcoinRowMapper());
     }
 
     public List<Bitcoin> getAll() throws DataAccessException {
@@ -75,7 +56,8 @@ public class CoindeskRepository implements ICoindeskRepository {
     }
 
     public int update(Bitcoin model) throws DataAccessException {
-        String sql = "UPDATE BITCOIN SET name = ?, price = ? WHERE id = ?";        
+        String sql = "UPDATE BITCOIN SET code=?, codecname=?, symbol=?, rate=?, description=?, ratefloat=?, " +
+                        "updated=?, updatediso=?, updateduk=?, updatedtw=?, createdate=?, moddate=? WHERE id = ?";
         return jdbcTemplate.update(connection -> {
             PreparedStatement ps = connection.prepareStatement(sql);
             ps.setString(1, model.getCode());
@@ -90,6 +72,7 @@ public class CoindeskRepository implements ICoindeskRepository {
             ps.setString(10, model.getUpdatedtw());
             ps.setLong(11, model.getCreatedate());
             ps.setLong(12, model.getModdate());            
+            ps.setInt(13, model.getId());
             return ps;
         });
     }

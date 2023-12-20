@@ -7,19 +7,15 @@ import com.coindesk.demo.services.models.Bitcoin;
 import com.coindesk.demo.services.models.SourceCoin;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.google.gson.JsonDeserializer;
-import com.google.gson.JsonObject;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.util.ArrayList;
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.math.BigInteger;
+import java.util.ArrayList;
 import java.util.List;
+import java.net.HttpURLConnection;
 import java.net.URL;
 import java.lang.Long;
 
@@ -53,13 +49,13 @@ public final class CoindeskService implements ICoindeskService {
     }    
     
     @Override
-    public String displayCUBCoindesk()  {
-        return "CUB Coindesk";
+    public Bitcoin displayCUBCoindesk(String id)  {
+        return _coindeskRepository.getById(id);
     }
 
     @Override
     public List<Bitcoin> GetAll()   {        
-        return null;
+        return _coindeskRepository.getAll();
     }
 
     @Override
@@ -68,7 +64,8 @@ public final class CoindeskService implements ICoindeskService {
     }
 
     @Override
-    public int AddCoin(Bitcoin model)   {
+    public int Add(Bitcoin model)   {
+        _coindeskRepository.insert(model);
         return 0;
     }
 
@@ -76,6 +73,13 @@ public final class CoindeskService implements ICoindeskService {
     public void Delete(String code)  {
 
         _coindeskRepository.delete(code);
+    }
+
+     @Override
+    public void Update(Bitcoin bitcoin)  {
+        bitcoin.setUpdatedtw(GeTwDate());
+        bitcoin.setModdate(GetDate());
+        _coindeskRepository.update(bitcoin);            
     }
 
     private String CallCoinDeskAPI() {
@@ -94,9 +98,7 @@ public final class CoindeskService implements ICoindeskService {
                     response.append(inputLine);
                 }
                 in.close();
-                
-                 
-                // Use the jsonObject as needed                
+                         
                 return response.toString();
             } else {
                 System.out.println("Error: " + responseCode);
